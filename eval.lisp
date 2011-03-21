@@ -49,10 +49,21 @@
 	(t (eval cadar clauses) env)))
 
 ;; make new frame
-(define bind (vars vals env)
+(defun bind (vars vals env)
   (cons (pair-up vars vals)
 	env))
 
-(define pair-up (vars vals)
+(defun pair-up (vars vals)
   (cond ((eq vars '())
-	 ())))
+	 (cond ((eq vals '()) '())
+	       (t (error "tka"))))
+	((eq vals '())
+	 (error "tfa"))
+	(t (cons (cons (car vars)
+		       (car vals))
+		 (pair-up (cdr vars)
+			  (cdr vals))))))
+
+(defun lookup (sym env)
+  (cond ((eq env '()) (error "ubv"))
+	(t (funcall (lambda )))))
