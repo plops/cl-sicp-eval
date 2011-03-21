@@ -13,16 +13,46 @@
 
 #+nil
 (cdr (assoc 'exp '((exp . 3) (blub . 4))))
+
+#+nil
 (defun lookup (sym env)
   (cdr (assoc sym env)))
-(defun evlist (args env))
+
+
+(defun evlist (args env)
+  (cond ((eq l '()) '())
+	(t (cons (eval (car args) env)
+		 (eval (cdr args) env)))))
+
 (defun apply (proc args)
   (cond ((primitive-p proc)
 	 (apply-primop proc args))
 	((eq (car proc) 'closure)
-	 (eval (cadadr proc)
-	       (bind (caadr proc)
+	 ;; procedure has the structure 
+	 ;; (closure ((x) (+ x x)) <env>)
+	 (eval (cadadr proc) ;; body of procedure
+	       (bind (caadr proc) ;; formal parameters
 		     args
-		     (caddr proc))))
-	(t (error "apply")))
-(defun evcond)
+		     (caddr proc) ;; environment
+		     )))
+	(t (error "apply"))))
+
+
+(defun evcond (clauses env)
+  (cond ((eq clauses '()) '())
+	((eq (caar clauses) 't;; predicate
+	     )
+	 (eval (cadar clauses) ;; 2nd element of first clause
+	       env))
+	((false-p (eval (caar clauses) env)) ;; not true, so next
+	 (evcond (cdr clauses) env))
+	(t (eval cadar clauses) env)))
+
+;; make new frame
+(define bind (vars vals env)
+  (cons (pair-up vars vals)
+	env))
+
+(define pair-up (vars vals)
+  (cond ((eq vars '())
+	 ())))
